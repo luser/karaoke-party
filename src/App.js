@@ -1,14 +1,15 @@
 /*global AudioContext*/
 import React, { Component } from 'react';
-//import logo from './logo.svg';
 import './App.css';
 import 'webrtc-adapter';
 import { Delay, Input, Reverb, Volume } from 'audio-effects';
+import YouTube from 'react-youtube';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
+        <VideoPlayer />
         <MicrophoneList />
       </div>
     );
@@ -16,6 +17,47 @@ class App extends Component {
 }
 
 export default App;
+
+class VideoPlayer extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      player: null,
+      videoId: '',
+      playerVars: {
+        autoplay: 1
+      }
+    };
+    this.onReady = this.onReady.bind(this);
+    this.onInput = this.onInput.bind(this);
+  }
+  render () {
+    const opts = {
+      height: '390',
+      width: '640'
+    };
+    return (
+        <div>
+        <input type="text" onChange={this.onInput} />
+        <YouTube
+          videoId={this.state.videoId}
+          opts={opts}
+          onReady={this.onReady}
+          />
+      </div>
+    );
+  }
+  onInput (event) {
+    this.playVideo(event.target.value);
+  }
+  onReady (event) {
+    this.setState({player: event.target});
+  }
+  playVideo (videoId) {
+    console.log(`playing video ${videoId}`);
+    this.setState({videoId});
+  }
+}
 
 class MicrophoneList extends Component {
   constructor (props) {
